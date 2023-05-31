@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="java">
+<html lang="en">
+<head th:insert="layout.html :: css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--<img id="img-of-the-day">-->
+<!--<video width="320" height="240" controls>-->
+<!--    <source id="img-of-the-day" src="" type="video/ogg">-->
+<!--</video>-->
+<div>
+    <iframe width="504"
+            height="315"
+            id="img-of-the-day" src="">
+    </iframe>
+    <div>
+        <form action="/comment/create" method="post" th:object="${comment}">
+            <label for="star">Star
+            </label>
+            <select id="star" th:field="*{stars}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select><br/>
+            <label for="author">Author</label>
+            <input id="author" th:field="*{author}" style="width: 400px;"><br/>
+            <label for="feedback">Feedback</label>
+            <textarea id="feedback" style="height: 90px; width: 400px" th:field="*{feedback}"></textarea><br/>
+            <button type="submit">Comment</button>
+        </form>
+    </div>
+    <div>
+        <div th:each="cm: ${listComment}" id="comment-group">
+            <div>
+                <span>Author: </span>
+                <span th:text="${cm.author}"></span>
+            </div>
+            <div>
+                <span>Star: </span>
+                <span th:text="${cm.stars}"></span>
+            </div>
+            <div>
+                <span>Feedback: </span>
+                <span th:text="${cm.feedback}"></span>
+            </div>
+            <div>
+                <a th:href="@{/comment/like/{id}(id=${cm.id})}">Like:</a>
+                <span th:text="${cm.likes}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let query = 'https://api.nasa.gov/planetary/apod?api_key=3QxsFL0RHszbSF3eyzwHtqd6JZZRpxtZHLVzzNsy';
+    let request = new XMLHttpRequest();
+    request.open('GET', query);
+    request.onload = function () {
+        if (request.status === 200) {
+            let response = JSON.parse(request.responseText);
+            document.getElementById('img-of-the-day').setAttribute('src', response.url);
+        }
+    };
+    request.send();
+</script>
+
+</body>
+</html>
